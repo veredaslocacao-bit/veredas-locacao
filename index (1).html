@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veredas Locação</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#f2f2f2;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px 15px;border-bottom:2px solid #D4A23A}
+h1{margin:0;color:#D4A23A;font-size:30px;letter-spacing:2px}
+header p{color:#b8b8b8;margin:8px 0 0}
+main{max-width:1200px;margin:auto;padding:30px 16px 60px}
+#status{text-align:center;color:#b8b8b8;padding:50px 15px}
+#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.card{background:#141414;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden}
+.photo{height:230px;background:#000;display:flex;align-items:center;justify-content:center}
+.photo img{width:100%;height:100%;object-fit:contain}
+.body{padding:18px}
+h2{color:#D4A23A;font-size:21px;margin:0 0 10px}
+.status{display:inline-block;border:1px solid #D4A23A;color:#D4A23A;border-radius:20px;padding:4px 10px;font-size:12px;text-transform:uppercase;margin-bottom:10px}
+.info{color:#b8b8b8;font-size:14px;line-height:1.8}
+.price{color:#D4A23A;font-size:19px;font-weight:bold;margin:10px 0}
+.description{color:#b8b8b8;font-size:13px;line-height:1.5;margin-bottom:15px}
+.button{display:block;background:#D4A23A;color:#000;text-align:center;text-decoration:none;font-weight:bold;padding:13px;border-radius:6px}
+footer{text-align:center;color:#888;font-size:12px;padding:25px;border-top:1px solid #222}
+@media(max-width:600px){h1{font-size:23px}#grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>VEREDAS LOCAÇÃO</h1>
+<p>Estoque de veículos disponíveis</p>
+</header>
+<main>
+<div id="status">Carregando veículos...</div>
+<div id="grid"></div>
+</main>
+<footer>Veredas Locação — Estoque atualizado automaticamente.</footer>
+<script>
+var API="https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec";
+var WHATSAPP="5512987087431";
+
+function esc(v){
+  var d=document.createElement("div");
+  d.textContent=v==null?"":String(v);
+  return d.innerHTML;
+}
+
+function mostrarErro(){
+  document.getElementById("status").textContent="Não foi possível conectar ao estoque. Confira a implantação do site e tente novamente.";
+}
+
+function veredasCallback(dados){
+  try{
+    if(typeof dados==="string") dados=JSON.parse(dados);
+    if(dados && Array.isArray(dados.data)) dados=dados.data;
+    if(dados && Array.isArray(dados.veiculos)) dados=dados.veiculos;
+
+    var grid=document.getElementById("grid");
+    var status=document.getElementById("status");
+
+    if(!Array.isArray(dados) || dados.length===0){
+      status.textContent="Nenhum veículo disponível no momento.";
+      return;
+    }
+
+    status.style.display="none";
+
+    grid.innerHTML=dados.map(function(v){
+      var mensagem="Olá! Tenho interesse no "+(v.marca||"")+" "+(v.modelo||"")+" "+(v.ano||"")+".";
+      var whatsapp="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(mensagem);
+
+      return '<div class="card">'+
+        '<div class="photo">'+
+        (v.foto ? '<img src="'+esc(v.foto)+'" alt="'+esc(v.marca)+' '+esc(v.modelo)+'">' : '<span>Foto em breve</span>')+
+        '</div>'+
+        '<div class="body">'+
+        '<h2>'+esc(v.marca)+' '+esc(v.modelo)+'</h2>'+
+        (v.status ? '<span class="status">'+esc(v.status)+'</span>' : '')+
+        '<div class="info"><strong>Ano:</strong> '+esc(v.ano)+'<br>'+
+        '<strong>Câmbio:</strong> '+esc(v.cambio)+'<br>'+
+        '<strong>Período mínimo:</strong> '+esc(v.periodoMinimo)+'</div>'+
+        '<div class="price">'+esc(v.valor)+'</div>'+
+        (v.descricao ? '<div class="description">'+esc(v.descricao)+'</div>' : '')+
+        '<a class="button" href="'+whatsapp+'" target="_blank">ALUGAR ESTE CARRO</a>'+
+        '</div></div>';
+    }).join("");
+  }catch(e){
+    console.error("Erro ao processar estoque:",e);
+    mostrarErro();
+  }
+}
+
+window.veredasCallback=veredasCallback;
+
+var script=document.createElement("script");
+script.async=true;
+script.src=API+"?api=1&callback=veredasCallback&_="+Date.now();
+script.onload=function(){console.log("Resposta do estoque recebida.");};
+script.onerror=function(){console.error("Falha ao carregar a API:",script.src);mostrarErro();};
+document.head.appendChild(script);
+</script>
+</body>
+</html>
