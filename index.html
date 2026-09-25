@@ -11,7 +11,7 @@ header{text-align:center;padding:30px 15px;border-bottom:2px solid #D4A23A}
 h1{margin:0;color:#D4A23A;font-size:30px;letter-spacing:2px}
 header p{color:#b8b8b8;margin:8px 0 0}
 main{max-width:1200px;margin:auto;padding:30px 16px 60px}
-#status{text-align:center;color:#b8b8b8;padding:50px 15px;line-height:1.6}
+#status{text-align:center;color:#b8b8b8;padding:50px 15px}
 #grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
 .card{background:#141414;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden}
 .photo{height:230px;background:#000;display:flex;align-items:center;justify-content:center}
@@ -38,7 +38,7 @@ footer{text-align:center;color:#888;font-size:12px;padding:25px;border-top:1px s
 </main>
 <footer>Veredas Locação — Estoque atualizado automaticamente.</footer>
 <script>
-var API="https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec?api=1";
+var API="https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec";
 var WHATSAPP="5512987087431";
 
 function esc(v){
@@ -47,64 +47,59 @@ function esc(v){
   return d.innerHTML;
 }
 
-window.veredasCallback=function(data){
-  console.log("Veredas Locação - resposta da API:",data);
+function mostrarErro(){
+  document.getElementById("status").textContent="Não foi possível conectar ao estoque. Confira a implantação do site e tente novamente.";
+}
 
-  var grid=document.getElementById("grid");
-  var status=document.getElementById("status");
+function veredasCallback(dados){
+  try{
+    if(typeof dados==="string") dados=JSON.parse(dados);
+    if(dados && Array.isArray(dados.data)) dados=dados.data;
+    if(dados && Array.isArray(dados.veiculos)) dados=dados.veiculos;
 
-  if(typeof data === "string"){
-    try{data=JSON.parse(data)}catch(e){}
-  }
+    var grid=document.getElementById("grid");
+    var status=document.getElementById("status");
 
-  if(data && !Array.isArray(data)){
-    if(Array.isArray(data.data)) data=data.data;
-    else if(Array.isArray(data.vehicles)) data=data.vehicles;
-    else if(Array.isArray(data.veiculos)) data=data.veiculos;
-  }
+    if(!Array.isArray(dados) || dados.length===0){
+      status.textContent="Nenhum veículo disponível no momento.";
+      return;
+    }
 
-  if(!Array.isArray(data)){
-    status.innerHTML="Não foi possível interpretar os dados do estoque.<br><small>Abra o console do navegador (F12) para ver o retorno da API.</small>";
-    return;
-  }
+    status.style.display="none";
 
-  if(data.length===0){
-    status.innerHTML="Nenhum veículo disponível no momento.<br><small>Verifique se o STATUS da planilha está como Disponível.</small>";
-    return;
-  }
+    grid.innerHTML=dados.map(function(v){
+      var mensagem="Olá! Tenho interesse no "+(v.marca||"")+" "+(v.modelo||"")+" "+(v.ano||"")+".";
+      var whatsapp="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(mensagem);
 
-  status.style.display="none";
-
-  grid.innerHTML=data.map(function(v){
-    var mensagem="Olá! Tenho interesse no "+(v.marca||"")+" "+(v.modelo||"")+" "+(v.ano||"")+".";
-    var whatsapp="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(mensagem);
-
-    return '<div class="card">'+
-      '<div class="photo">'+
+      return '<div class="card">'+
+        '<div class="photo">'+
         (v.foto ? '<img src="'+esc(v.foto)+'" alt="'+esc(v.marca)+' '+esc(v.modelo)+'">' : '<span>Foto em breve</span>')+
-      '</div>'+ 
-      '<div class="body">'+
+        '</div>'+
+        '<div class="body">'+
         '<h2>'+esc(v.marca)+' '+esc(v.modelo)+'</h2>'+
         (v.status ? '<span class="status">'+esc(v.status)+'</span>' : '')+
-        '<div class="info">'+
-          '<strong>Ano:</strong> '+esc(v.ano)+'<br>'+
-          '<strong>Câmbio:</strong> '+esc(v.cambio)+'<br>'+
-          '<strong>Período mínimo:</strong> '+esc(v.periodoMinimo)+
-        '</div>'+ 
-        '<div class="price">'+esc(v.valor)+'</div>'+ 
+        '<div class="info"><strong>Ano:</strong> '+esc(v.ano)+'<br>'+
+        '<strong>Câmbio:</strong> '+esc(v.cambio)+'<br>'+
+        '<strong>Período mínimo:</strong> '+esc(v.periodoMinimo)+'</div>'+
+        '<div class="price">'+esc(v.valor)+'</div>'+
         (v.descricao ? '<div class="description">'+esc(v.descricao)+'</div>' : '')+
-        '<a class="button" href="'+whatsapp+'" target="_blank" rel="noopener">ALUGAR ESTE CARRO</a>'+ 
-      '</div>'+ 
-    '</div>';
-  }).join("");
-};
+        '<a class="button" href="'+whatsapp+'" target="_blank">ALUGAR ESTE CARRO</a>'+
+        '</div></div>';
+    }).join("");
+  }catch(e){
+    console.error("Erro ao processar estoque:",e);
+    mostrarErro();
+  }
+}
+
+window.veredasCallback=veredasCallback;
 
 var script=document.createElement("script");
-script.src=API+"&callback=veredasCallback&_="+Date.now();
-script.onerror=function(){
-  document.getElementById("status").innerHTML="Não foi possível conectar ao estoque.<br><small>Confira a implantação do site e tente novamente.</small>";
-};
-document.body.appendChild(script);
+script.async=true;
+script.src=API+"?api=1&callback=veredasCallback&_="+Date.now();
+script.onload=function(){console.log("Resposta do estoque recebida.");};
+script.onerror=function(){console.error("Falha ao carregar a API:",script.src);mostrarErro();};
+document.head.appendChild(script);
 </script>
 </body>
 </html>
