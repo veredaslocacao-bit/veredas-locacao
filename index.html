@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,227 +14,363 @@
 
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
   background: #000;
   color: #fff;
-  font-family: Arial, sans-serif;
 }
 
 header {
+  background: #000;
+  padding: 25px 20px;
   text-align: center;
-  padding: 35px 20px;
-  border-bottom: 2px solid #D4A23A;
+  border-bottom: 1px solid #D4A23A;
 }
 
-header h1 {
-  margin: 0;
+.logo {
+  font-size: 28px;
+  font-weight: bold;
   color: #D4A23A;
-  font-size: 30px;
   letter-spacing: 2px;
 }
 
-header p {
-  color: #bbb;
+.subtitulo {
   margin-top: 8px;
+  color: #fff;
+  font-size: 14px;
 }
 
-main {
+.container {
   max-width: 1200px;
   margin: auto;
-  padding: 30px 16px 60px;
+  padding: 30px 20px;
+}
+
+.titulo {
+  text-align: center;
+  color: #D4A23A;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.descricao-topo {
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 35px;
 }
 
 #status {
   text-align: center;
-  color: #bbb;
-  padding: 50px 15px;
+  color: #ccc;
+  margin: 30px 0;
 }
 
-#grid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
 }
 
 .card {
-  background: #141414;
-  border: 1px solid #2b2b2b;
-  border-radius: 10px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 12px;
   overflow: hidden;
+  transition: 0.2s;
 }
 
-.photo {
+.card:hover {
+  border-color: #D4A23A;
+  transform: translateY(-3px);
+}
+
+.card img {
   width: 100%;
-  height: 240px;
-  background: #050505;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  background: #222;
 }
 
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.body {
+.card-content {
   padding: 20px;
 }
 
-.body h2 {
-  margin: 0 0 12px;
+.card h2 {
   color: #D4A23A;
+  margin: 0 0 10px;
   font-size: 22px;
 }
 
 .info {
-  color: #bbb;
-  line-height: 1.8;
+  color: #ddd;
   font-size: 14px;
+  line-height: 1.7;
 }
 
-.price {
-  color: #D4A23A;
-  font-size: 20px;
+.preco {
+  color: #fff;
+  font-size: 22px;
   font-weight: bold;
   margin: 15px 0;
 }
 
-.description {
-  color: #bbb;
-  line-height: 1.5;
+.minimo {
+  color: #D4A23A;
   font-size: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 15px;
 }
 
-.button {
+.obs {
+  color: #aaa;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.botao {
   display: block;
+  width: 100%;
+  padding: 14px;
+  text-align: center;
   background: #D4A23A;
   color: #000;
   text-decoration: none;
-  text-align: center;
   font-weight: bold;
-  padding: 14px;
   border-radius: 6px;
 }
 
-.button:hover {
+.botao:hover {
   opacity: 0.9;
 }
 
-footer {
+.erro {
+  color: #ff7777;
   text-align: center;
-  color: #777;
-  font-size: 12px;
-  padding: 25px;
-  border-top: 1px solid #222;
+  padding: 30px;
 }
 
-@media (max-width: 600px) {
-
-  header h1 {
-    font-size: 23px;
-  }
-
-  #grid {
-    grid-template-columns: 1fr;
-  }
-
+footer {
+  margin-top: 50px;
+  padding: 25px;
+  text-align: center;
+  border-top: 1px solid #333;
+  color: #888;
+  font-size: 13px;
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <header>
 
-  <h1>VEREDAS LOCAÇÃO</h1>
+  <div class="logo">
+    VEREDAS LOCAÇÃO
+  </div>
 
-  <p>Veículos disponíveis para locação</p>
+  <div class="subtitulo">
+    Seu carro para o dia a dia
+  </div>
 
 </header>
 
 
-<main>
+<div class="container">
+
+  <h1 class="titulo">
+    VEÍCULOS DISPONÍVEIS
+  </h1>
+
+  <p class="descricao-topo">
+    Confira nossos veículos disponíveis para locação.
+  </p>
 
   <div id="status">
     Carregando veículos...
   </div>
 
-  <div id="grid"></div>
+  <div id="veiculos" class="grid"></div>
 
-</main>
+</div>
 
 
 <footer>
-
-  Veredas Locação — Estoque atualizado automaticamente.
-
+  © Veredas Locação
 </footer>
 
 
 <script>
 
-/* =========================================================
-   CONFIGURAÇÃO
-========================================================= */
+/* =====================================================
+   CONFIGURAÇÃO DA PLANILHA
+===================================================== */
 
-const API =
-"https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec";
+const PLANILHA_ID =
+"1SSSd2qihULpOX-DAwhpeNnLabhwJR16fmYm0081Yi0k";
+
+const ABA =
+"Página 1";
 
 
-const WHATSAPP =
-"5512987087431";
+/* =====================================================
+   ENDEREÇO DIRETO DA PLANILHA
+===================================================== */
+
+const URL_PLANILHA =
+"https://docs.google.com/spreadsheets/d/" +
+PLANILHA_ID +
+"/gviz/tq?" +
+"sheet=" + encodeURIComponent(ABA) +
+"&tqx=responseHandler:veredasCallback";
 
 
-/* =========================================================
-   ESCAPAR TEXTO
-========================================================= */
+/* =====================================================
+   INICIAR
+===================================================== */
 
-function escapar(valor) {
+const script = document.createElement("script");
 
-  const div =
-    document.createElement("div");
+script.src = URL_PLANILHA;
 
-  div.textContent =
-    valor == null ? "" : String(valor);
+script.onerror = function() {
 
-  return div.innerHTML;
+  document.getElementById("status").innerHTML =
+    '<div class="erro">' +
+    'Não foi possível conectar ao estoque.' +
+    '</div>';
+
+};
+
+document.body.appendChild(script);
+
+
+/* =====================================================
+   RECEBER DADOS DA PLANILHA
+===================================================== */
+
+function veredasCallback(resposta) {
+
+  try {
+
+    const linhas =
+      resposta.table.rows;
+
+    const veiculos = [];
+
+    linhas.forEach(function(linha) {
+
+      const c = linha.c;
+
+      const dados = [];
+
+      for (let i = 0; i < c.length; i++) {
+
+        dados.push(
+          c[i] && c[i].v != null
+            ? String(c[i].v)
+            : ""
+        );
+
+      }
+
+
+      /*
+        A = ID
+        B = MARCA
+        C = MODELO
+        D = ANO
+        E = CÂMBIO
+        F = KM
+        G = VALOR
+        H = STATUS
+        I = FOTO
+        J = DESCRIÇÃO
+        K = FOTOS
+        L = PERÍODO MÍNIMO
+        M = OBSERVAÇÕES
+      */
+
+      const status =
+        normalizar(dados[7]);
+
+
+      if (status === "disponivel") {
+
+        veiculos.push({
+
+          id: dados[0],
+          marca: dados[1],
+          modelo: dados[2],
+          ano: dados[3],
+          cambio: dados[4],
+          km: dados[5],
+          valor: dados[6],
+          status: dados[7],
+          foto: dados[8],
+          descricao: dados[9],
+          fotos: dados[10],
+          periodoMinimo: dados[11],
+          observacoes: dados[12]
+
+        });
+
+      }
+
+    });
+
+
+    mostrarVeiculos(veiculos);
+
+  }
+
+  catch (erro) {
+
+    document.getElementById("status").innerHTML =
+      '<div class="erro">' +
+      'Erro ao ler o estoque.' +
+      '</div>';
+
+    console.error(erro);
+
+  }
 
 }
 
 
-/* =========================================================
-   RECEBER ESTOQUE DO APPS SCRIPT
-========================================================= */
+/* =====================================================
+   NORMALIZAR TEXTO
+===================================================== */
 
-window.veredasCallback =
-function(veiculos) {
+function normalizar(texto) {
+
+  return String(texto || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+}
+
+
+/* =====================================================
+   MOSTRAR VEÍCULOS
+===================================================== */
+
+function mostrarVeiculos(veiculos) {
+
+  const container =
+    document.getElementById("veiculos");
 
   const status =
     document.getElementById("status");
 
-  const grid =
-    document.getElementById("grid");
 
-
-  if (!Array.isArray(veiculos)) {
-
-    status.textContent =
-      "Não foi possível carregar o estoque.";
-
-    return;
-
-  }
+  container.innerHTML = "";
 
 
   if (veiculos.length === 0) {
 
-    status.textContent =
+    status.innerHTML =
       "Nenhum veículo disponível no momento.";
 
     return;
@@ -244,165 +378,141 @@ function(veiculos) {
   }
 
 
-  status.style.display =
-    "none";
+  status.innerHTML =
+    veiculos.length +
+    (veiculos.length === 1
+      ? " veículo disponível"
+      : " veículos disponíveis");
 
 
-  grid.innerHTML =
-    veiculos.map(function(v) {
+  veiculos.forEach(function(carro) {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "card";
 
 
-      const mensagem =
-        "Olá! Tenho interesse no " +
-        (v.marca || "") +
-        " " +
-        (v.modelo || "") +
-        " " +
-        (v.ano || "") +
-        ".";
+    let imagem =
+      carro.foto;
 
 
-      const whatsapp =
-        "https://wa.me/" +
-        WHATSAPP +
-        "?text=" +
-        encodeURIComponent(mensagem);
+    /*
+      Se não houver foto,
+      usa um fundo padrão.
+    */
+
+    if (!imagem) {
+
+      imagem =
+        "https://via.placeholder.com/800x500/111111/D4A23A?text=Veredas+Locação";
+
+    }
 
 
-      return `
+    /*
+      WhatsApp
+    */
 
-        <div class="card">
+    const mensagem =
+      "Olá! Tenho interesse no " +
+      carro.marca + " " +
+      carro.modelo + " " +
+      carro.ano +
+      " para locação.";
 
-
-          <div class="photo">
-
-            ${
-              v.foto
-
-              ?
-
-              `<img
-                src="${escapar(v.foto)}"
-                alt="${escapar(
-                  (v.marca || "") +
-                  " " +
-                  (v.modelo || "")
-                )}"
-              >`
-
-              :
-
-              `<span>
-                Foto em breve
-              </span>`
-            }
-
-          </div>
+    const whatsapp =
+      "https://wa.me/5512987087431?text=" +
+      encodeURIComponent(mensagem);
 
 
-          <div class="body">
+    card.innerHTML = `
 
+      <img
+        src="${imagem}"
+        alt="${carro.marca} ${carro.modelo}"
+        onerror="this.src='https://via.placeholder.com/800x500/111111/D4A23A?text=Veredas+Locação'"
+      >
 
-            <h2>
+      <div class="card-content">
 
-              ${escapar(v.marca)}
-              ${escapar(v.modelo)}
+        <h2>
+          ${carro.marca} ${carro.modelo}
+        </h2>
 
-            </h2>
+        <div class="info">
 
+          <strong>Ano:</strong>
+          ${carro.ano || "-"}
+          <br>
 
-            <div class="info">
+          <strong>Câmbio:</strong>
+          ${carro.cambio || "-"}
+          <br>
 
-              <strong>Ano:</strong>
-              ${escapar(v.ano)}
-
-              <br>
-
-              <strong>Câmbio:</strong>
-              ${escapar(v.cambio)}
-
-              <br>
-
-              <strong>Período mínimo:</strong>
-              ${escapar(v.periodoMinimo)}
-
-            </div>
-
-
-            <div class="price">
-
-              ${escapar(v.valor)}
-
-            </div>
-
-
-            ${
-              v.descricao
-
-              ?
-
-              `<div class="description">
-                ${escapar(v.descricao)}
-              </div>`
-
-              :
-
-              ""
-            }
-
-
-            <a
-              class="button"
-              href="${whatsapp}"
-              target="_blank"
-              rel="noopener"
-            >
-
-              ALUGAR ESTE CARRO
-
-            </a>
-
-
-          </div>
-
+          ${
+            carro.km
+              ? `<strong>KM:</strong> ${carro.km}<br>`
+              : ""
+          }
 
         </div>
 
-      `;
+        <div class="preco">
+          ${carro.valor || "-"}
+        </div>
 
-    }).join("");
+        ${
+          carro.periodoMinimo
+            ? `
+              <div class="minimo">
+                Período mínimo:
+                ${carro.periodoMinimo}
+              </div>
+            `
+            : ""
+        }
 
-};
+        ${
+          carro.descricao
+            ? `
+              <div class="obs">
+                ${carro.descricao}
+              </div>
+            `
+            : ""
+        }
+
+        ${
+          carro.observacoes
+            ? `
+              <div class="obs">
+                ${carro.observacoes}
+              </div>
+            `
+            : ""
+        }
+
+        <a
+          class="botao"
+          href="${whatsapp}"
+          target="_blank"
+        >
+          TENHO INTERESSE
+        </a>
+
+      </div>
+
+    `;
 
 
-/* =========================================================
-   CARREGAR APPS SCRIPT POR JSONP
-========================================================= */
+    container.appendChild(card);
 
-const script =
-document.createElement("script");
+  });
 
-
-script.src =
-API +
-"?api=1&callback=veredasCallback&_=" +
-Date.now();
-
-
-script.onerror =
-function() {
-
-  document.getElementById("status").innerHTML =
-    "Não foi possível conectar ao estoque.";
-
-};
-
-
-document.body.appendChild(script);
+}
 
 </script>
 
-
 </body>
-
 </html>
