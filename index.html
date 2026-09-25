@@ -202,7 +202,7 @@ footer {
 <script>
 
 /* =====================================================
-   CONFIGURAÇÃO DA PLANILHA
+   CONFIGURAÇÃO
 ===================================================== */
 
 const PLANILHA_ID =
@@ -213,68 +213,104 @@ const ABA =
 
 
 /* =====================================================
-   ENDEREÇO DIRETO DA PLANILHA
+   CALLBACK GLOBAL
 ===================================================== */
 
-const URL_PLANILHA =
-"https://docs.google.com/spreadsheets/d/" +
-PLANILHA_ID +
-"/gviz/tq?" +
-"sheet=" + encodeURIComponent(ABA) +
-"&tqx=responseHandler:veredasCallback";
-
-
-/* =====================================================
-   INICIAR
-===================================================== */
-
-const script = document.createElement("script");
-
-script.src = URL_PLANILHA;
-
-script.onerror = function() {
-
-  document.getElementById("status").innerHTML =
-    '<div class="erro">' +
-    'Não foi possível conectar ao estoque.' +
-    '</div>';
-
-};
-
-document.body.appendChild(script);
-
-
-/* =====================================================
-   RECEBER DADOS DA PLANILHA
-===================================================== */
-
-function veredasCallback(resposta) {
+window.veredasCallback = function(resposta) {
 
   try {
+
+    console.log("Resposta recebida do Google:", resposta);
+
+
+    if (!resposta) {
+      throw new Error("Resposta vazia.");
+    }
+
+
+    if (resposta.status &&
+        String(resposta.status).toLowerCase() !== "ok") {
+
+      throw new Error(
+        resposta.errors
+          ? JSON.stringify(resposta.errors)
+          : "Google não retornou status OK."
+      );
+
+    }
+
+
+    if (!resposta.table ||
+        !resposta.table.rows) {
+
+      throw new Error(
+        "A resposta não possui tabela."
+      );
+
+    }
+
 
     const linhas =
       resposta.table.rows;
 
+
     const veiculos = [];
+
 
     linhas.forEach(function(linha) {
 
-      const c = linha.c;
+      const celulas =
+        linha.c || [];
 
-      const dados = [];
 
-      for (let i = 0; i < c.length; i++) {
+      function valorColuna(numero) {
 
-        dados.push(
-          c[i] && c[i].v != null
-            ? String(c[i].v)
-            : ""
-        );
+        const celula =
+          celulas[numero];
+
+
+        if (!celula) {
+          return "";
+        }
+
+
+        /*
+          O Google pode fornecer:
+          v = valor
+          f = valor formatado
+
+          Preferimos o valor formatado
+          quando existir.
+        */
+
+        if (
+          celula.f !== undefined &&
+          celula.f !== null
+        ) {
+
+          return String(celula.f);
+
+        }
+
+
+        if (
+          celula.v !== undefined &&
+          celula.v !== null
+        ) {
+
+          return String(celula.v);
+
+        }
+
+
+        return "";
 
       }
 
 
       /*
+        COLUNAS DA PLANILHA
+
         A = ID
         B = MARCA
         C = MODELO
@@ -290,29 +326,62 @@ function veredasCallback(resposta) {
         M = OBSERVAÇÕES
       */
 
-      const status =
-        normalizar(dados[7]);
+
+      const carro = {
+
+        id:
+          valorColuna(0),
+
+        marca:
+          valorColuna(1),
+
+        modelo:
+          valorColuna(2),
+
+        ano:
+          valorColuna(3),
+
+        cambio:
+          valorColuna(4),
+
+        km:
+          valorColuna(5),
+
+        valor:
+          valorColuna(6),
+
+        status:
+          valorColuna(7),
+
+        foto:
+          valorColuna(8),
+
+        descricao:
+          valorColuna(9),
+
+        fotos:
+          valorColuna(10),
+
+        periodoMinimo:
+          valorColuna(11),
+
+        observacoes:
+          valorColuna(12)
+
+      };
 
 
-      if (status === "disponivel") {
+      /*
+        Só mostra veículos
+        com status Disponível.
+      */
 
-        veiculos.push({
+      if (
+        normalizar(carro.status)
+        === "disponivel"
+      ) {
 
-          id: dados[0],
-          marca: dados[1],
-          modelo: dados[2],
-          ano: dados[3],
-          cambio: dados[4],
-          km: dados[5],
-          valor: dados[6],
-          status: dados[7],
-          foto: dados[8],
-          descricao: dados[9],
-          fotos: dados[10],
-          periodoMinimo: dados[11],
-          observacoes: dados[12]
-
-        });
+        veiculos.push(carro);
 
       }
 
@@ -323,18 +392,34 @@ function veredasCallback(resposta) {
 
   }
 
+
   catch (erro) {
 
-    document.getElementById("status").innerHTML =
-      '<div class="erro">' +
-      'Erro ao ler o estoque.' +
-      '</div>';
+    console.error(
+      "Erro ao processar estoque:",
+      erro
+    );
 
-    console.error(erro);
+
+    document.getElementById(
+      "status"
+    ).innerHTML =
+
+      '<div class="erro">' +
+
+      'Erro ao ler o estoque.' +
+
+      '<br><br>' +
+
+      '<small>' +
+      'Verifique o console do navegador.' +
+      '</small>' +
+
+      '</div>';
 
   }
 
-}
+};
 
 
 /* =====================================================
@@ -344,12 +429,75 @@ function veredasCallback(resposta) {
 function normalizar(texto) {
 
   return String(texto || "")
+
     .trim()
+
     .toLowerCase()
+
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
 
 }
+
+
+/* =====================================================
+   ENDEREÇO DA PLANILHA
+===================================================== */
+
+const URL_PLANILHA =
+
+  "https://docs.google.com/spreadsheets/d/" +
+
+  PLANILHA_ID +
+
+  "/gviz/tq?" +
+
+  "sheet=" +
+  encodeURIComponent(ABA) +
+
+  "&headers=1" +
+
+  "&tqx=" +
+  encodeURIComponent(
+    "out:json;responseHandler:veredasCallback"
+  );
+
+
+/* =====================================================
+   CARREGAR PLANILHA
+===================================================== */
+
+const script =
+  document.createElement("script");
+
+
+script.src =
+  URL_PLANILHA;
+
+
+script.async = true;
+
+
+script.onerror = function() {
+
+  document.getElementById(
+    "status"
+  ).innerHTML =
+
+    '<div class="erro">' +
+
+    'Não foi possível conectar ao estoque.' +
+
+    '</div>';
+
+};
+
+
+document.head.appendChild(script);
 
 
 /* =====================================================
@@ -359,10 +507,15 @@ function normalizar(texto) {
 function mostrarVeiculos(veiculos) {
 
   const container =
-    document.getElementById("veiculos");
+    document.getElementById(
+      "veiculos"
+    );
+
 
   const status =
-    document.getElementById("status");
+    document.getElementById(
+      "status"
+    );
 
 
   container.innerHTML = "";
@@ -379,28 +532,30 @@ function mostrarVeiculos(veiculos) {
 
 
   status.innerHTML =
+
     veiculos.length +
-    (veiculos.length === 1
-      ? " veículo disponível"
-      : " veículos disponíveis");
+
+    (
+      veiculos.length === 1
+        ? " veículo disponível"
+        : " veículos disponíveis"
+    );
 
 
   veiculos.forEach(function(carro) {
 
+
     const card =
       document.createElement("div");
 
-    card.className = "card";
+
+    card.className =
+      "card";
 
 
     let imagem =
       carro.foto;
 
-
-    /*
-      Se não houver foto,
-      usa um fundo padrão.
-    */
 
     if (!imagem) {
 
@@ -415,15 +570,25 @@ function mostrarVeiculos(veiculos) {
     */
 
     const mensagem =
+
       "Olá! Tenho interesse no " +
-      carro.marca + " " +
-      carro.modelo + " " +
+
+      carro.marca +
+      " " +
+      carro.modelo +
+      " " +
       carro.ano +
+
       " para locação.";
 
+
     const whatsapp =
+
       "https://wa.me/5512987087431?text=" +
-      encodeURIComponent(mensagem);
+
+      encodeURIComponent(
+        mensagem
+      );
 
 
     card.innerHTML = `
@@ -437,8 +602,10 @@ function mostrarVeiculos(veiculos) {
       <div class="card-content">
 
         <h2>
-          ${carro.marca} ${carro.modelo}
+          ${carro.marca}
+          ${carro.modelo}
         </h2>
+
 
         <div class="info">
 
@@ -452,53 +619,73 @@ function mostrarVeiculos(veiculos) {
 
           ${
             carro.km
-              ? `<strong>KM:</strong> ${carro.km}<br>`
+              ? `
+                <strong>KM:</strong>
+                ${carro.km}
+                <br>
+              `
               : ""
           }
 
         </div>
 
+
         <div class="preco">
+
           ${carro.valor || "-"}
+
         </div>
+
 
         ${
           carro.periodoMinimo
             ? `
               <div class="minimo">
+
                 Período mínimo:
                 ${carro.periodoMinimo}
+
               </div>
             `
             : ""
         }
+
 
         ${
           carro.descricao
             ? `
               <div class="obs">
+
                 ${carro.descricao}
+
               </div>
             `
             : ""
         }
+
 
         ${
           carro.observacoes
             ? `
               <div class="obs">
+
                 ${carro.observacoes}
+
               </div>
             `
             : ""
         }
 
+
         <a
           class="botao"
           href="${whatsapp}"
           target="_blank"
+          rel="noopener noreferrer"
         >
+
           TENHO INTERESSE
+
         </a>
 
       </div>
