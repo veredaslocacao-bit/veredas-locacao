@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -143,9 +145,12 @@ footer {
 }
 
 </style>
+
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -176,16 +181,26 @@ footer {
 
 <script>
 
+/* =========================================================
+   CONFIGURAÇÃO
+========================================================= */
+
 const API =
-"https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec?api=1";
+"https://script.google.com/macros/s/AKfycbzt41SCnmxFvh-r3aaQ5P4WXmtnQRLFKW2JcYM4prZtx9lJ5mCJuUgXkXJhBqeekHeu/exec";
 
 
-const WHATSAPP = "5512987087431";
+const WHATSAPP =
+"5512987087431";
 
+
+/* =========================================================
+   ESCAPAR TEXTO
+========================================================= */
 
 function escapar(valor) {
 
-  const div = document.createElement("div");
+  const div =
+    document.createElement("div");
 
   div.textContent =
     valor == null ? "" : String(valor);
@@ -195,7 +210,12 @@ function escapar(valor) {
 }
 
 
-async function carregarEstoque() {
+/* =========================================================
+   RECEBER ESTOQUE DO APPS SCRIPT
+========================================================= */
+
+window.veredasCallback =
+function(veiculos) {
 
   const status =
     document.getElementById("status");
@@ -204,181 +224,185 @@ async function carregarEstoque() {
     document.getElementById("grid");
 
 
-  try {
+  if (!Array.isArray(veiculos)) {
 
-    const resposta =
-      await fetch(API, {
-        method: "GET",
-        cache: "no-store"
-      });
+    status.textContent =
+      "Não foi possível carregar o estoque.";
 
+    return;
 
-    if (!resposta.ok) {
-
-      throw new Error(
-        "Erro HTTP " + resposta.status
-      );
-
-    }
+  }
 
 
-    const veiculos =
-      await resposta.json();
+  if (veiculos.length === 0) {
+
+    status.textContent =
+      "Nenhum veículo disponível no momento.";
+
+    return;
+
+  }
 
 
-    console.log("Veículos recebidos:", veiculos);
+  status.style.display =
+    "none";
 
 
-    if (
-      !Array.isArray(veiculos) ||
-      veiculos.length === 0
-    ) {
-
-      status.textContent =
-        "Nenhum veículo disponível no momento.";
-
-      return;
-
-    }
+  grid.innerHTML =
+    veiculos.map(function(v) {
 
 
-    status.style.display = "none";
+      const mensagem =
+        "Olá! Tenho interesse no " +
+        (v.marca || "") +
+        " " +
+        (v.modelo || "") +
+        " " +
+        (v.ano || "") +
+        ".";
 
 
-    grid.innerHTML =
-      veiculos.map(function(v) {
+      const whatsapp =
+        "https://wa.me/" +
+        WHATSAPP +
+        "?text=" +
+        encodeURIComponent(mensagem);
 
 
-        const mensagem =
-          "Olá! Tenho interesse no " +
-          (v.marca || "") +
-          " " +
-          (v.modelo || "") +
-          " " +
-          (v.ano || "") +
-          ".";
+      return `
+
+        <div class="card">
 
 
-        const whatsapp =
-          "https://wa.me/" +
-          WHATSAPP +
-          "?text=" +
-          encodeURIComponent(mensagem);
+          <div class="photo">
 
+            ${
+              v.foto
 
-        return `
+              ?
 
-          <div class="card">
+              `<img
+                src="${escapar(v.foto)}"
+                alt="${escapar(
+                  (v.marca || "") +
+                  " " +
+                  (v.modelo || "")
+                )}"
+              >`
 
-            <div class="photo">
+              :
 
-              ${
-                v.foto
-
-                ?
-
-                `<img
-                  src="${escapar(v.foto)}"
-                  alt="${escapar(v.marca)} ${escapar(v.modelo)}"
-                >`
-
-                :
-
-                `<span>Foto em breve</span>`
-              }
-
-            </div>
-
-
-            <div class="body">
-
-              <h2>
-                ${escapar(v.marca)}
-                ${escapar(v.modelo)}
-              </h2>
-
-
-              <div class="info">
-
-                <strong>Ano:</strong>
-                ${escapar(v.ano)}
-
-                <br>
-
-                <strong>Câmbio:</strong>
-                ${escapar(v.cambio)}
-
-                <br>
-
-                <strong>Período mínimo:</strong>
-                ${escapar(v.periodoMinimo)}
-
-              </div>
-
-
-              <div class="price">
-
-                ${escapar(v.valor)}
-
-              </div>
-
-
-              ${
-                v.descricao
-
-                ?
-
-                `<div class="description">
-                  ${escapar(v.descricao)}
-                </div>`
-
-                :
-
-                ""
-              }
-
-
-              <a
-                class="button"
-                href="${whatsapp}"
-                target="_blank"
-              >
-                ALUGAR ESTE CARRO
-              </a>
-
-            </div>
+              `<span>
+                Foto em breve
+              </span>`
+            }
 
           </div>
 
-        `;
 
-      }).join("");
-
-  }
-
-  catch (erro) {
-
-    console.error(
-      "Erro ao carregar estoque:",
-      erro
-    );
+          <div class="body">
 
 
-    status.innerHTML =
-      "Não foi possível conectar ao estoque.<br><br>" +
-      "<small>" +
-      "Erro: " +
-      escapar(erro.message) +
-      "</small>";
+            <h2>
 
-  }
+              ${escapar(v.marca)}
+              ${escapar(v.modelo)}
 
-}
+            </h2>
 
 
-carregarEstoque();
+            <div class="info">
+
+              <strong>Ano:</strong>
+              ${escapar(v.ano)}
+
+              <br>
+
+              <strong>Câmbio:</strong>
+              ${escapar(v.cambio)}
+
+              <br>
+
+              <strong>Período mínimo:</strong>
+              ${escapar(v.periodoMinimo)}
+
+            </div>
+
+
+            <div class="price">
+
+              ${escapar(v.valor)}
+
+            </div>
+
+
+            ${
+              v.descricao
+
+              ?
+
+              `<div class="description">
+                ${escapar(v.descricao)}
+              </div>`
+
+              :
+
+              ""
+            }
+
+
+            <a
+              class="button"
+              href="${whatsapp}"
+              target="_blank"
+              rel="noopener"
+            >
+
+              ALUGAR ESTE CARRO
+
+            </a>
+
+
+          </div>
+
+
+        </div>
+
+      `;
+
+    }).join("");
+
+};
+
+
+/* =========================================================
+   CARREGAR APPS SCRIPT POR JSONP
+========================================================= */
+
+const script =
+document.createElement("script");
+
+
+script.src =
+API +
+"?api=1&callback=veredasCallback&_=" +
+Date.now();
+
+
+script.onerror =
+function() {
+
+  document.getElementById("status").innerHTML =
+    "Não foi possível conectar ao estoque.";
+
+};
+
+
+document.body.appendChild(script);
 
 </script>
 
+
 </body>
+
 </html>
