@@ -7,6 +7,7 @@
   <title>Veredas Locação</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,28 +18,38 @@
       font-family: Arial, Helvetica, sans-serif;
       background: #000000;
       color: #ffffff;
+      min-height: 100vh;
     }
+
+    /* =========================
+       CABEÇALHO
+    ========================= */
 
     header {
       background: #000000;
       border-bottom: 1px solid #D4A23A;
-      padding: 25px 20px;
+      padding: 28px 20px;
       text-align: center;
     }
 
     .logo {
+      color: #D4A23A;
       font-size: 32px;
       font-weight: bold;
-      color: #D4A23A;
       letter-spacing: 2px;
     }
 
     .sublogo {
-      margin-top: 6px;
-      font-size: 13px;
+      margin-top: 7px;
       color: #ffffff;
+      font-size: 13px;
       letter-spacing: 2px;
     }
+
+
+    /* =========================
+       TOPO
+    ========================= */
 
     .hero {
       text-align: center;
@@ -48,13 +59,19 @@
     .hero h1 {
       color: #D4A23A;
       font-size: 30px;
+      letter-spacing: 1px;
       margin-bottom: 10px;
     }
 
     .hero p {
-      color: #dddddd;
+      color: #cccccc;
       font-size: 16px;
     }
+
+
+    /* =========================
+       ESTOQUE
+    ========================= */
 
     .estoque {
       max-width: 1200px;
@@ -65,52 +82,73 @@
     #status {
       text-align: center;
       color: #cccccc;
-      margin: 20px 0 30px;
+      margin: 10px 0 30px;
       font-size: 15px;
     }
 
+
+    /* =========================
+       CARDS
+    ========================= */
+
     .veiculos {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(280px, 1fr)
+      );
+
+      gap: 28px;
     }
 
     .card {
       background: #111111;
-      border: 1px solid #333333;
+      border: 1px solid #3a3a3a;
       border-radius: 12px;
       overflow: hidden;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     }
 
     .card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
       border-color: #D4A23A;
+      box-shadow: 0 8px 25px rgba(212,162,58,0.15);
     }
 
+
+    /* =========================
+       FOTO
+    ========================= */
+
     .foto-container {
-  width: 100%;
-  height: 230px;
-  background: #222222;
-  overflow: hidden;
-}
+      width: 100%;
+      height: 230px;
+      background: #222222;
+      overflow: hidden;
+    }
 
     .foto-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  background: #222222;
-}
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
     .sem-foto {
+      width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #888888;
-      font-size: 15px;
+      color: #777777;
+      font-size: 14px;
     }
+
+
+    /* =========================
+       CONTEÚDO DO CARD
+    ========================= */
 
     .conteudo {
       padding: 20px;
@@ -121,34 +159,43 @@
       font-size: 13px;
       font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+      margin-bottom: 5px;
     }
 
     .modelo {
+      color: #ffffff;
       font-size: 24px;
       font-weight: bold;
-      margin: 5px 0 15px;
+      margin-bottom: 18px;
     }
+
+
+    /* =========================
+       INFORMAÇÕES
+    ========================= */
 
     .informacoes {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 17px;
     }
 
     .info {
-      background: #1c1c1c;
+      background: #1b1b1b;
+      border: 1px solid #292929;
       border-radius: 6px;
       padding: 10px;
     }
 
     .info span {
       display: block;
-      color: #999999;
-      font-size: 11px;
-      margin-bottom: 4px;
+      color: #888888;
+      font-size: 10px;
       text-transform: uppercase;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
     }
 
     .info strong {
@@ -156,24 +203,34 @@
       font-size: 14px;
     }
 
+
+    /* =========================
+       PREÇO
+    ========================= */
+
     .preco {
       color: #D4A23A;
-      font-size: 24px;
+      font-size: 25px;
       font-weight: bold;
       margin: 15px 0 5px;
     }
 
     .periodo {
-      color: #cccccc;
+      color: #bbbbbb;
       font-size: 13px;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
+
+
+    /* =========================
+       DESCRIÇÃO
+    ========================= */
 
     .descricao {
       color: #cccccc;
       font-size: 14px;
       line-height: 1.5;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     .observacoes {
@@ -182,48 +239,80 @@
       padding: 10px;
       color: #cccccc;
       font-size: 13px;
+      line-height: 1.4;
       margin-bottom: 18px;
     }
+
+
+    /* =========================
+       BOTÃO WHATSAPP
+    ========================= */
 
     .botao {
       display: block;
       width: 100%;
       text-align: center;
       text-decoration: none;
+
       background: #D4A23A;
       color: #000000;
+
       font-weight: bold;
-      padding: 13px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+
+      padding: 14px;
       border-radius: 6px;
-      transition: 0.3s;
+
+      transition: all 0.3s ease;
     }
 
     .botao:hover {
       background: #ffffff;
+      color: #000000;
     }
 
+
+    /* =========================
+       SEM VEÍCULOS
+    ========================= */
+
+    .vazio {
+      text-align: center;
+      color: #999999;
+      padding: 40px 20px;
+      grid-column: 1 / -1;
+    }
+
+
+    /* =========================
+       ERRO
+    ========================= */
+
     .erro {
-      max-width: 600px;
+      max-width: 650px;
       margin: 30px auto;
-      padding: 20px;
+      padding: 22px;
+
       background: #1b1111;
       border: 1px solid #7a3030;
       border-radius: 8px;
+
       text-align: center;
       color: #ffaaaa;
       line-height: 1.6;
     }
 
-    .vazio {
-      text-align: center;
-      padding: 40px 20px;
-      color: #aaaaaa;
-    }
+
+    /* =========================
+       RODAPÉ
+    ========================= */
 
     footer {
       border-top: 1px solid #222222;
       margin-top: 60px;
       padding: 30px 20px;
+
       text-align: center;
       color: #888888;
       font-size: 13px;
@@ -231,7 +320,14 @@
 
     footer strong {
       color: #D4A23A;
+      font-size: 15px;
+      letter-spacing: 1px;
     }
+
+
+    /* =========================
+       CELULAR
+    ========================= */
 
     @media (max-width: 600px) {
 
@@ -239,32 +335,66 @@
         font-size: 26px;
       }
 
-      .hero h1 {
-        font-size: 25px;
-      }
-
       .hero {
         padding-top: 35px;
+      }
+
+      .hero h1 {
+        font-size: 25px;
       }
 
       .foto-container {
         height: 210px;
       }
+
+      .modelo {
+        font-size: 22px;
+      }
+
+      .preco {
+        font-size: 23px;
+      }
+
     }
+
   </style>
 </head>
 
+
 <body>
 
+
+  <!-- CABEÇALHO -->
+
   <header>
-    <div class="logo">VEREDAS LOCAÇÃO</div>
-    <div class="sublogo">LOCAÇÃO DE VEÍCULOS</div>
+
+    <div class="logo">
+      VEREDAS LOCAÇÃO
+    </div>
+
+    <div class="sublogo">
+      LOCAÇÃO DE VEÍCULOS
+    </div>
+
   </header>
 
+
+  <!-- TOPO -->
+
   <section class="hero">
-    <h1>NOSSOS VEÍCULOS</h1>
-    <p>Confira os veículos disponíveis para locação.</p>
+
+    <h1>
+      NOSSOS VEÍCULOS
+    </h1>
+
+    <p>
+      Confira os veículos disponíveis para locação.
+    </p>
+
   </section>
+
+
+  <!-- ESTOQUE -->
 
   <main class="estoque">
 
@@ -276,7 +406,11 @@
 
   </main>
 
+
+  <!-- RODAPÉ -->
+
   <footer>
+
     <p>
       <strong>VEREDAS LOCAÇÃO</strong>
     </p>
@@ -288,16 +422,16 @@
     <p style="margin-top:8px;">
       (12) 98708-7431
     </p>
+
   </footer>
 
 
   <script>
 
-    /*
-      ============================================
-      CONFIGURAÇÃO DA PLANILHA
-      ============================================
-    */
+
+    /* =========================
+       CONFIGURAÇÃO
+    ========================= */
 
     const PLANILHA_ID =
       "1SSSd2qihULpOX-DAwhpeNnLabhwJR16fmYm0081Yi0k";
@@ -309,11 +443,9 @@
       "5512987087431";
 
 
-    /*
-      ============================================
-      FUNÇÃO PARA NORMALIZAR TEXTO
-      ============================================
-    */
+    /* =========================
+       NORMALIZAR TEXTO
+    ========================= */
 
     function normalizarTexto(texto) {
 
@@ -326,11 +458,9 @@
     }
 
 
-    /*
-      ============================================
-      CALLBACK DO GOOGLE SHEETS
-      ============================================
-    */
+    /* =========================
+       CALLBACK GOOGLE SHEETS
+    ========================= */
 
     window.veredasCallback = function(resposta) {
 
@@ -343,10 +473,12 @@
           );
 
           return;
+
         }
 
 
         const tabela = resposta.table;
+
 
         if (!tabela || !tabela.rows) {
 
@@ -355,16 +487,12 @@
           );
 
           return;
+
         }
 
 
         const veiculos = [];
 
-
-        /*
-          Cada linha da planilha
-          corresponde a um veículo.
-        */
 
         tabela.rows.forEach(function(linha) {
 
@@ -379,7 +507,11 @@
 
             return c[coluna].f !== undefined
               ? c[coluna].f
-              : (c[coluna].v !== undefined ? c[coluna].v : "");
+              : (
+                  c[coluna].v !== undefined
+                    ? c[coluna].v
+                    : ""
+                );
 
           }
 
@@ -387,15 +519,12 @@
           const status = valor(7);
 
 
-          /*
-            Só mostra veículos com status
-            "Disponível"
-          */
-
           if (
             normalizarTexto(status) !== "disponivel"
           ) {
+
             return;
+
           }
 
 
@@ -449,11 +578,9 @@
     };
 
 
-    /*
-      ============================================
-      MOSTRAR VEÍCULOS
-      ============================================
-    */
+    /* =========================
+       MOSTRAR VEÍCULOS
+    ========================= */
 
     function mostrarVeiculos(veiculos) {
 
@@ -473,13 +600,18 @@
           "Nenhum veículo disponível no momento.";
 
         container.innerHTML = `
+
           <div class="vazio">
-            No momento não temos veículos disponíveis
-            para locação.
+
+            No momento não temos veículos
+            disponíveis para locação.
+
           </div>
+
         `;
 
         return;
+
       }
 
 
@@ -491,41 +623,48 @@
 
       veiculos.forEach(function(veiculo) {
 
+
         const card =
           document.createElement("div");
 
         card.className = "card";
 
 
-        /*
-          FOTO
-        */
+        /* FOTO */
 
         let fotoHTML = `
+
           <div class="sem-foto">
             Foto não disponível
           </div>
+
         `;
 
 
         if (veiculo.foto) {
 
           fotoHTML = `
+
             <img
               src="${escaparHTML(veiculo.foto)}"
               alt="${escaparHTML(
-                veiculo.marca + " " + veiculo.modelo
+                veiculo.marca +
+                " " +
+                veiculo.modelo
               )}"
-              onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;sem-foto&quot;>Foto não disponível</div>';"
+              onerror="
+                this.style.display='none';
+                this.parentElement.innerHTML=
+                '<div class=&quot;sem-foto&quot;>Foto não disponível</div>';
+              "
             >
+
           `;
 
         }
 
 
-        /*
-          WHATSAPP
-        */
+        /* WHATSAPP */
 
         const mensagem =
           "Olá! Tenho interesse no " +
@@ -542,9 +681,7 @@
           encodeURIComponent(mensagem);
 
 
-        /*
-          INFORMAÇÕES
-        */
+        /* INFORMAÇÕES */
 
         let informacoes = "";
 
@@ -552,12 +689,17 @@
         if (veiculo.ano) {
 
           informacoes += `
+
             <div class="info">
+
               <span>Ano</span>
+
               <strong>
                 ${escaparHTML(veiculo.ano)}
               </strong>
+
             </div>
+
           `;
 
         }
@@ -566,12 +708,17 @@
         if (veiculo.cambio) {
 
           informacoes += `
+
             <div class="info">
+
               <span>Câmbio</span>
+
               <strong>
                 ${escaparHTML(veiculo.cambio)}
               </strong>
+
             </div>
+
           `;
 
         }
@@ -580,104 +727,148 @@
         if (veiculo.km) {
 
           informacoes += `
+
             <div class="info">
+
               <span>KM</span>
+
               <strong>
                 ${escaparHTML(veiculo.km)}
               </strong>
+
             </div>
+
           `;
 
         }
 
 
-        /*
-          PERÍODO MÍNIMO
-        */
+        /* PERÍODO */
 
         let periodoHTML = "";
+
 
         if (veiculo.periodoMinimo) {
 
           periodoHTML = `
+
             <div class="periodo">
+
               Período mínimo:
+
               <strong>
-                ${escaparHTML(veiculo.periodoMinimo)}
+                ${escaparHTML(
+                  veiculo.periodoMinimo
+                )}
               </strong>
+
             </div>
+
           `;
 
         }
 
 
-        /*
-          DESCRIÇÃO
-        */
+        /* DESCRIÇÃO */
 
         let descricaoHTML = "";
+
 
         if (veiculo.descricao) {
 
           descricaoHTML = `
+
             <div class="descricao">
-              ${escaparHTML(veiculo.descricao)}
+
+              ${escaparHTML(
+                veiculo.descricao
+              )}
+
             </div>
+
           `;
 
         }
 
 
-        /*
-          OBSERVAÇÕES
-        */
+        /* OBSERVAÇÕES */
 
         let observacoesHTML = "";
+
 
         if (veiculo.observacoes) {
 
           observacoesHTML = `
+
             <div class="observacoes">
-              ${escaparHTML(veiculo.observacoes)}
+
+              ${escaparHTML(
+                veiculo.observacoes
+              )}
+
             </div>
+
           `;
 
         }
 
 
-        /*
-          MONTA O CARD
-        */
+        /* CARD */
 
         card.innerHTML = `
 
           <div class="foto-container">
+
             ${fotoHTML}
+
           </div>
+
 
           <div class="conteudo">
 
+
             <div class="marca">
-              ${escaparHTML(veiculo.marca)}
+
+              ${escaparHTML(
+                veiculo.marca
+              )}
+
             </div>
+
 
             <div class="modelo">
-              ${escaparHTML(veiculo.modelo)}
+
+              ${escaparHTML(
+                veiculo.modelo
+              )}
+
             </div>
+
 
             <div class="informacoes">
+
               ${informacoes}
+
             </div>
 
+
             <div class="preco">
-              ${escaparHTML(veiculo.valor)}
+
+              ${escaparHTML(
+                veiculo.valor
+              )}
+
             </div>
+
 
             ${periodoHTML}
 
+
             ${descricaoHTML}
 
+
             ${observacoesHTML}
+
 
             <a
               class="botao"
@@ -685,8 +876,11 @@
               target="_blank"
               rel="noopener noreferrer"
             >
+
               TENHO INTERESSE
+
             </a>
+
 
           </div>
 
@@ -700,17 +894,20 @@
     }
 
 
-    /*
-      ============================================
-      MOSTRAR ERRO
-      ============================================
-    */
+    /* =========================
+       ERRO
+    ========================= */
 
     function mostrarErro(mensagem) {
 
-      document.getElementById("status").textContent = "";
+      document.getElementById(
+        "status"
+      ).textContent = "";
 
-      document.getElementById("veiculos").innerHTML = `
+
+      document.getElementById(
+        "veiculos"
+      ).innerHTML = `
 
         <div class="erro">
 
@@ -734,15 +931,14 @@
     }
 
 
-    /*
-      ============================================
-      PROTEÇÃO CONTRA HTML
-      ============================================
-    */
+    /* =========================
+       SEGURANÇA
+    ========================= */
 
     function escaparHTML(valor) {
 
       return String(valor || "")
+
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -752,24 +948,15 @@
     }
 
 
-    /*
-      ============================================
-      CARREGAR GOOGLE SHEETS
-      ============================================
-    */
+    /* =========================
+       CARREGAR PLANILHA
+    ========================= */
 
     function carregarEstoque() {
 
       const script =
         document.createElement("script");
 
-
-      /*
-        Importante:
-        usamos JSONP diretamente no Google Sheets.
-
-        Não depende do Apps Script.
-      */
 
       const url =
         "https://docs.google.com/spreadsheets/d/" +
@@ -800,13 +987,12 @@
     }
 
 
-    /*
-      ============================================
-      INICIAR
-      ============================================
-    */
+    /* =========================
+       INICIAR
+    ========================= */
 
     carregarEstoque();
+
 
   </script>
 
